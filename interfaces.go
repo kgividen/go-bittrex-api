@@ -7,7 +7,7 @@ import (
 
 type api interface {
 	getCurrency(string) Currency
-	getBalances(string)
+	getBalances() string
 }
 
 //////////////////////////////////////////
@@ -27,4 +27,5 @@ type Currency struct {
 type Client interface {
 	Get(url string) (resp *http.Response, err error)
 	Post(url, contentType string, body io.Reader) (resp *http.Response, err error)
+	Do(req *http.Request) (*http.Response, error)
 }

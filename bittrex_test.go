@@ -37,3 +37,6 @@ func (this *fakeClient) Get(url string) (resp *http.Response, err error) {
 func (this *fakeClient) Post(url, contentType string, body io.Reader) (resp *http.Response, err error) {
 	return &http.Response{}, nil
 }
+func (this *fakeClient) Do(req *http.Request) (*http.Response, error) {
+	return &http.Response{}, nil
+}
