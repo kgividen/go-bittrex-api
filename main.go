@@ -13,6 +13,6 @@ func main() {
 	httpClient := &http.Client{}
 	client := newBittrexClient(apiKey, secretKey, httpClient)
 	api := NewBittrexAPI(client, uri)
-	log.Println(api.getCurrency("BTC"))
-	//log.Println(api.getBalances())
+	//log.Println(api.getCurrency("BTC"))
+	log.Println(api.getBalances())
 }

@@ -7,7 +7,7 @@ import (
 
 type api interface {
 	getCurrency(string) Currency
-	getBalances() string
+	getBalances() []Balance
 }
 
 //////////////////////////////////////////
@@ -22,6 +22,13 @@ type Currency struct {
 	LogoUrl          string `json:"logoUrl"`
 	ProhibitedIn     string `json:"prohibitedIn"`
 	BaseAddress      string `json:"baseAddress"`
+}
+
+type Balance struct {
+	CurrencySymbol string `json:"currencySymbol"`
+	Total          string `json:"total"`
+	Available      string `json:"available"`
+	UpdatedAt      string `json:"updatedAt"`
 }
 
 type Client interface {
