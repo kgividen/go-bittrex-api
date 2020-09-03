@@ -5,15 +5,49 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"os"
 )
 
 func main() {
-	getCurrency("btc")
+	url := "https://api.bittrex.com/v3"
+	apiKey := os.Getenv("BITTREX_API_KEY")
+	secretKey := os.Getenv("BITTREX_SECRET_KEY")
+	bittrexApi := NewBittrexAPI(url, apiKey, secretKey)
+	log.Println(bittrexApi.getCurrency("BTC"))
 }
 
-func getCurrency(symbol string) {
-	//apiKey := os.Getenv("BITTREX-API")
-	//apiSecret := os.Getenv("BITTREX-SECRET")
+type BittrexAPI struct {
+	baseURL   string
+	apiKey    string
+	secretKey string
+}
+
+func NewBittrexAPI(baseURL string, apiKey string, secretKey string) *BittrexAPI {
+	return &BittrexAPI{baseURL: baseURL, apiKey: apiKey, secretKey: secretKey}
+}
+
+func (this *BittrexAPI) getCurrency(symbol string) Currency {
+	resp, err := http.Get(this.baseURL + "/currencies/" + symbol)
+	if err != nil {
+		log.Println(err)
+	}
+
+	defer resp.Body.Close()
+
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		log.Println(err)
+	}
+
+	currency := Currency{}
+	if err := json.Unmarshal(body, &currency); err != nil {
+		log.Println(err)
+	}
+
+	return currency
+}
+
+func (this *BittrexAPI) getBalances(symbol string) {
 	//
 	//method := "GET"
 	url := "https://api.bittrex.com/v3"
@@ -61,6 +95,7 @@ func getCurrency(symbol string) {
 	log.Println(currency)
 }
 
+//////////////////////////////////////////
 type Currency struct {
 	Symbol           string `json:"symbol"`
 	Name             string `json:"name"`
@@ -72,4 +107,11 @@ type Currency struct {
 	LogoUrl          string `json:"logoUrl"`
 	ProhibitedIn     string `json:"prohibitedIn"`
 	BaseAddress      string `json:"baseAddress"`
+}
+
+////////////////////////////////////////////////////////////
+
+type api interface {
+	getCurrency(string) Currency
+	getBalances(string)
 }
