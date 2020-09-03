@@ -15,7 +15,8 @@ func NewBittrexAPI(client Client, uri string) *BittrexAPI {
 }
 
 func (this *BittrexAPI) getCurrency(symbol string) Currency {
-	body := this.client.Do("GET", this.uri + "/currencies/" + symbol, "", false)
+	uri := this.uri + "/currencies/" + symbol
+	body := this.client.Do("GET", uri, "", false)
 
 	currency := Currency{}
 	if err := json.Unmarshal(body, &currency); err != nil {
@@ -26,13 +27,10 @@ func (this *BittrexAPI) getCurrency(symbol string) Currency {
 }
 
 func (this *BittrexAPI) getBalances() []Balance {
-	payload := ""
 	uri := this.uri + "/balances"
-	method := "GET"
-	body := this.client.Do(method, uri, payload, true)
+	body := this.client.Do("GET", uri, "", true)
 
 	var balances []Balance
-
 	if err := json.Unmarshal(body, &balances); err != nil {
 		log.Println(err)
 	}

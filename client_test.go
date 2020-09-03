@@ -9,11 +9,11 @@ import (
 )
 
 func TestBittrexClientFixture(t *testing.T) {
-    gunit.Run(new(BittrexClientFixture), t)
+	gunit.Run(new(BittrexClientFixture), t)
 }
 
 type BittrexClientFixture struct {
-    *gunit.Fixture
+	*gunit.Fixture
 }
 
 func (this *BittrexClientFixture) Setup() {

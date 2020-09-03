@@ -36,7 +36,7 @@ func (this *BittrexAPIFixture) TestGetBalances() {
 			Total:          "0.00000000",
 			Available:      "0.00000000",
 			UpdatedAt:      "2019-10-29T20:25:10.16Z",
-		},{
+		}, {
 			CurrencySymbol: "LTC",
 			Total:          "0",
 			Available:      "0",
