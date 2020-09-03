@@ -1,7 +1,6 @@
 package main
 
 import (
-	"io"
 	"net/http"
 	"testing"
 
@@ -21,22 +20,20 @@ type BittrexAPIFixture struct {
 func (this *BittrexAPIFixture) Setup() {}
 
 func (this *BittrexAPIFixture) TestGetCurrency() {
-	bittrex := NewBittrexAPI(&fakeClient{}, "fakeURL", "", "")
+	client := &fakeBittrexClient{}
+	bittrex := NewBittrexAPI(client, "fakeURL")
 	result := bittrex.getCurrency("btc")
 	this.So(result, should.Resemble, Currency{})
 }
 
 ///////////////////////////////////////
 
-type fakeClient struct{}
+type fakeBittrexClient struct{}
 
-func (this *fakeClient) Get(url string) (resp *http.Response, err error) {
-	return &http.Response{Body: http.NoBody}, nil
+func (this *fakeBittrexClient) Do(method, uri, payload string, authenticate bool) []byte {
+	return nil
 }
 
-func (this *fakeClient) Post(url, contentType string, body io.Reader) (resp *http.Response, err error) {
-	return &http.Response{}, nil
-}
-func (this *fakeClient) Do(req *http.Request) (*http.Response, error) {
-	return &http.Response{}, nil
+func (this *fakeBittrexClient) authenticate(request *http.Request, payload string, uri string, method string) error {
+	return nil
 }

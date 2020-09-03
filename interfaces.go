@@ -25,6 +25,11 @@ type Currency struct {
 }
 
 type Client interface {
+	Do(method, uri, payload string, authenticate bool) []byte
+	authenticate(request *http.Request, payload string, uri string, method string) error
+}
+
+type Http interface {
 	Get(url string) (resp *http.Response, err error)
 	Post(url, contentType string, body io.Reader) (resp *http.Response, err error)
 	Do(req *http.Request) (*http.Response, error)
