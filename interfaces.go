@@ -1,5 +1,10 @@
 package main
 
+import (
+	"io"
+	"net/http"
+)
+
 type api interface {
 	getCurrency(string) Currency
 	getBalances(string)
@@ -17,4 +22,9 @@ type Currency struct {
 	LogoUrl          string `json:"logoUrl"`
 	ProhibitedIn     string `json:"prohibitedIn"`
 	BaseAddress      string `json:"baseAddress"`
+}
+
+type Client interface {
+	Get(url string) (resp *http.Response, err error)
+	Post(url, contentType string, body io.Reader) (resp *http.Response, err error)
 }

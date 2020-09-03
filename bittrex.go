@@ -4,21 +4,21 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"log"
-	"net/http"
 )
 
 type BittrexAPI struct {
 	baseURL   string
 	apiKey    string
 	secretKey string
+	client    Client
 }
 
-func NewBittrexAPI(baseURL string, apiKey string, secretKey string) *BittrexAPI {
-	return &BittrexAPI{baseURL: baseURL, apiKey: apiKey, secretKey: secretKey}
+func NewBittrexAPI(client Client, baseURL string, apiKey string, secretKey string) *BittrexAPI {
+	return &BittrexAPI{client: client, baseURL: baseURL, apiKey: apiKey, secretKey: secretKey}
 }
 
 func (this *BittrexAPI) getCurrency(symbol string) Currency {
-	resp, err := http.Get(this.baseURL + "/currencies/" + symbol)
+	resp, err := this.client.Get(this.baseURL + "/currencies/" + symbol)
 	if err != nil {
 		log.Println(err)
 	}
@@ -65,7 +65,7 @@ func (this *BittrexAPI) getBalances(symbol string) {
 	//	req.Header.Add("apisign", sig)
 	//}
 
-	resp, err := http.Get(url + "/currencies/" + symbol)
+	resp, err := this.client.Get(url + "/currencies/" + symbol)
 	if err != nil {
 		log.Println(err)
 	}
