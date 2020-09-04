@@ -23,8 +23,8 @@ func (this *BittrexAPIFixture) Setup() {}
 
 func (this *BittrexAPIFixture) TestGetCurrency() {
 	client := &fakeBittrexClient{}
-	bittrex := NewBittrexAPI(client, "fakeURL")
-	result, err := bittrex.getCurrency("btc")
+	bittrex := NewBittrexAPI(client, "")
+	result, err := bittrex.getCurrency("fakesymbol")
 	this.So(err, should.BeNil)
 	this.So(result, should.Resemble, Currency{})
 }
@@ -229,6 +229,10 @@ type fakeBittrexClient struct{}
 func (this *fakeBittrexClient) Do(method, uri, payload string, authenticate bool) ([]byte, error) {
 	if uri == "/balances" {
 		return []byte("[{\"currencySymbol\": \"BTC\",\"total\": \"0.00000000\",\"available\": \"0.00000000\",\"updatedAt\": \"2019-10-29T20:25:10.16Z\"},{\"currencySymbol\": \"LTC\",\"total\": \"0\",\"available\": \"0\",\"updatedAt\": \"2020-09-03T21:27:53.8210894Z\"}]"), nil
+	}
+
+	if uri == "/currencies/fakesymbol" {
+		return []byte("{}"), nil
 	}
 
 	if uri == "/markets/fakesymbol" {
