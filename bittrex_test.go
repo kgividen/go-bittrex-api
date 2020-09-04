@@ -131,6 +131,38 @@ func (this *BittrexAPIFixture) TestGetMarketSummaries() {
 	})
 }
 
+func (this *BittrexAPIFixture) TestGetMarketTicker() {
+	client := &fakeBittrexClient{}
+	bittrex := NewBittrexAPI(client, "")
+	result := bittrex.getMarketTicker("fakesymbol")
+	this.So(result, should.Resemble, MarketTicker{
+		Symbol:        "ETH-BTC",
+		LastTradeRate: 0.03760069,
+		BidRate:       0.03760103,
+		AskRate:       0.03762798,
+	})
+}
+
+func (this *BittrexAPIFixture) TestGetMarketTickers() {
+	client := &fakeBittrexClient{}
+	bittrex := NewBittrexAPI(client, "")
+	result := bittrex.getMarketTickers()
+	this.So(result, should.Resemble, []MarketTicker{
+		{
+			Symbol:        "ETH-BTC",
+			LastTradeRate: 0.03760069,
+			BidRate:       0.03760103,
+			AskRate:       0.03762798,
+		},
+		{
+			Symbol:        "ETH-FAKE",
+			LastTradeRate: 1.03760069,
+			BidRate:       1.03760103,
+			AskRate:       1.03762798,
+		},
+	})
+}
+
 ///////////////////////////////////////
 
 type fakeBittrexClient struct{}
@@ -153,8 +185,17 @@ func (this *fakeBittrexClient) Do(method, uri, payload string, authenticate bool
 	}
 
 	if uri == "/markets/summaries" {
-		return []byte("[{\"symbol\": \"4ART-BTC\",\"high\": \"0.00000275\",\"low\": \"0.00000249\",\"volume\": \"54499.59344453\",\"quoteVolume\": \"0.13917073\",\"percentChange\": \"10.44\",\"updatedAt\": \"2020-09-04T04:58:55.447Z\"\n  },\n  {\"symbol\": \"4ART-USDT\",\"high\": \"0.02880000\",\"low\": \"0.02667000\",\"volume\": \"48259.53706735\",\"quoteVolume\": \"1320.75839607\",\"percentChange\": \"-6.11\",\"updatedAt\": \"2020-09-04T04:33:20.01Z\"}]")
+		return []byte("[{\"symbol\": \"4ART-BTC\",\"high\": \"0.00000275\",\"low\": \"0.00000249\",\"volume\": \"54499.59344453\",\"quoteVolume\": \"0.13917073\",\"percentChange\": \"10.44\",\"updatedAt\": \"2020-09-04T04:58:55.447Z\"},{\"symbol\": \"4ART-USDT\",\"high\": \"0.02880000\",\"low\": \"0.02667000\",\"volume\": \"48259.53706735\",\"quoteVolume\": \"1320.75839607\",\"percentChange\": \"-6.11\",\"updatedAt\": \"2020-09-04T04:33:20.01Z\"}]")
 	}
+
+	if uri == "/markets/fakesymbol/ticker" {
+		return []byte("{\"symbol\":\"ETH-BTC\",\"lastTradeRate\":\"0.03760069\",\"bidRate\":\"0.03760103\",\"askRate\":\"0.03762798\"}")
+	}
+
+	if uri == "/markets/tickers" {
+		return []byte("[{\"symbol\": \"ETH-BTC\",\"lastTradeRate\": \"0.03760069\",\"bidRate\": \"0.03760103\",\"askRate\": \"0.03762798\"},{\"symbol\": \"ETH-FAKE\",\"lastTradeRate\": \"1.03760069\",\"bidRate\": \"1.03760103\",\"askRate\": \"1.03762798\"}]")
+	}
+
 	return nil
 }
 

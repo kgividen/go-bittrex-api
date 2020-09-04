@@ -61,6 +61,26 @@ func (this *BittrexAPI) getMarketSummaries() []MarketSummary {
 	return marketSummaries
 }
 
+func (this *BittrexAPI) getMarketTicker(symbol string) MarketTicker {
+	uri := this.uri + "/markets/" + symbol + "/ticker"
+	body := this.client.Do("GET", uri, "", false)
+
+	marketTicker := MarketTicker{}
+	convertJSON(body, &marketTicker)
+
+	return marketTicker
+}
+
+func (this *BittrexAPI) getMarketTickers() []MarketTicker {
+	uri := this.uri + "/markets/tickers"
+	body := this.client.Do("GET", uri, "", false)
+
+	var marketTickers []MarketTicker
+	convertJSON(body, &marketTickers)
+
+	return marketTickers
+}
+
 func (this *BittrexAPI) getCurrency(symbol string) Currency {
 	uri := this.uri + "/currencies/" + symbol
 	body := this.client.Do("GET", uri, "", false)
@@ -129,4 +149,11 @@ type MarketSummary struct {
 	QuoteVolume   float64 `json:"quoteVolume,string"`
 	PercentChange float64 `json:"percentChange,string"`
 	UpdatedAt     string  `json:"updatedAt"`
+}
+
+type MarketTicker struct {
+	Symbol        string  `json:"symbol"`
+	LastTradeRate float64 `json:"lastTradeRate,string"`
+	BidRate       float64 `json:"bidRate,string"`
+	AskRate       float64 `json:"askRate,string"`
 }
