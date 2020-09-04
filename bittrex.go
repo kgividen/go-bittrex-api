@@ -27,6 +27,18 @@ func (this *BittrexAPI) getMarket(symbol string) Market {
 	return market
 }
 
+func (this *BittrexAPI) getMarkets() []Market {
+	uri := this.uri + "/markets"
+	body := this.client.Do("GET", uri, "", false)
+
+	var markets []Market
+	if err := json.Unmarshal(body, &markets); err != nil {
+		log.Println(err)
+	}
+
+	return markets
+}
+
 func (this *BittrexAPI) getCurrency(symbol string) Currency {
 	uri := this.uri + "/currencies/" + symbol
 	body := this.client.Do("GET", uri, "", false)
