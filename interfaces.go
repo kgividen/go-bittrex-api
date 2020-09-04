@@ -11,7 +11,7 @@ type api interface {
 }
 
 type Client interface {
-	Do(method, uri, payload string, authenticate bool) []byte
+	Do(method, uri, payload string, authenticate bool) ([]byte, error)
 	authenticate(request *http.Request, payload string, uri string, method string) error
 }
 

@@ -6,7 +6,6 @@ import (
 	"encoding/hex"
 	"errors"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"strconv"
 	"strings"
@@ -23,32 +22,31 @@ func newBittrexClient(apiKey string, secretKey string, client Http) *bittrexClie
 	return &bittrexClient{apiKey: apiKey, secretKey: secretKey, client: client}
 }
 
-func (this *bittrexClient) Do(method string, uri string, payload string, authenticate bool) []byte {
+func (this *bittrexClient) Do(method string, uri string, payload string, authenticate bool) ([]byte, error) {
 
 	request, err := http.NewRequest(method, uri, strings.NewReader(payload))
 	if err != nil {
-		return nil
+		return nil, err
 	}
 	if authenticate {
 		if this.authenticate(request, payload, uri, method) != nil {
-			log.Println(err)
+			return nil, err
 		}
 	}
 
 	resp, err := this.client.Do(request)
 	if err != nil {
-		log.Println(err)
+		return nil, err
 	}
 
 	defer resp.Body.Close()
 
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		log.Println(err)
+		return nil, err
 	}
 
-	log.Println(body)
-	return body
+	return body, err
 }
 
 func (this *bittrexClient) authenticate(request *http.Request, payload string, uri string, method string) error {

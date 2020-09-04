@@ -25,7 +25,10 @@ func NewBittrexAPI(client Client, uri string) *BittrexAPI {
 
 func (this *BittrexAPI) getMarket(symbol string) Market {
 	uri := this.uri + "/markets/" + symbol
-	body := this.client.Do("GET", uri, "", false)
+	body, err := this.client.Do("GET", uri, "", false)
+	if err!=nil{
+		log.Println(err)
+	}
 
 	market := Market{}
 	convertJSON(body, &market)
@@ -35,7 +38,10 @@ func (this *BittrexAPI) getMarket(symbol string) Market {
 
 func (this *BittrexAPI) getMarkets() []Market {
 	uri := this.uri + "/markets"
-	body := this.client.Do("GET", uri, "", false)
+	body, err := this.client.Do("GET", uri, "", false)
+	if err!=nil{
+		log.Println(err)
+	}
 
 	var markets []Market
 	convertJSON(body, &markets)
@@ -45,7 +51,10 @@ func (this *BittrexAPI) getMarkets() []Market {
 
 func (this *BittrexAPI) getMarketSummary(symbol string) MarketSummary {
 	uri := this.uri + "/markets/" + symbol + "/summary"
-	body := this.client.Do("GET", uri, "", false)
+	body, err := this.client.Do("GET", uri, "", false)
+	if err!=nil{
+		log.Println(err)
+	}
 
 	marketSummary := MarketSummary{}
 	convertJSON(body, &marketSummary)
@@ -55,7 +64,10 @@ func (this *BittrexAPI) getMarketSummary(symbol string) MarketSummary {
 
 func (this *BittrexAPI) getMarketSummaries() []MarketSummary {
 	uri := this.uri + "/markets/summaries"
-	body := this.client.Do("GET", uri, "", false)
+	body, err := this.client.Do("GET", uri, "", false)
+	if err!=nil{
+		log.Println(err)
+	}
 
 	var marketSummaries []MarketSummary
 	convertJSON(body, &marketSummaries)
@@ -65,7 +77,10 @@ func (this *BittrexAPI) getMarketSummaries() []MarketSummary {
 
 func (this *BittrexAPI) getMarketTicker(symbol string) MarketTicker {
 	uri := this.uri + "/markets/" + symbol + "/ticker"
-	body := this.client.Do("GET", uri, "", false)
+	body, err := this.client.Do("GET", uri, "", false)
+	if err!=nil{
+		log.Println(err)
+	}
 
 	marketTicker := MarketTicker{}
 	convertJSON(body, &marketTicker)
@@ -75,7 +90,10 @@ func (this *BittrexAPI) getMarketTicker(symbol string) MarketTicker {
 
 func (this *BittrexAPI) getMarketTickers() []MarketTicker {
 	uri := this.uri + "/markets/tickers"
-	body := this.client.Do("GET", uri, "", false)
+	body, err := this.client.Do("GET", uri, "", false)
+	if err!=nil{
+		log.Println(err)
+	}
 
 	var marketTickers []MarketTicker
 	convertJSON(body, &marketTickers)
@@ -85,7 +103,10 @@ func (this *BittrexAPI) getMarketTickers() []MarketTicker {
 
 func (this *BittrexAPI) getCurrency(symbol string) Currency {
 	uri := this.uri + "/currencies/" + symbol
-	body := this.client.Do("GET", uri, "", false)
+	body, err := this.client.Do("GET", uri, "", false)
+	if err!=nil{
+		log.Println(err)
+	}
 
 	currency := Currency{}
 	convertJSON(body, &currency)
@@ -95,7 +116,10 @@ func (this *BittrexAPI) getCurrency(symbol string) Currency {
 
 func (this *BittrexAPI) getBalances() []Balance {
 	uri := this.uri + "/balances"
-	body := this.client.Do("GET", uri, "", true)
+	body, err := this.client.Do("GET", uri, "", true)
+	if err!=nil{
+		log.Println(err)
+	}
 
 	var balances []Balance
 	convertJSON(body, &balances)
@@ -105,7 +129,10 @@ func (this *BittrexAPI) getBalances() []Balance {
 
 func (this *BittrexAPI) getOrder(orderID string) Order {
 	uri := this.uri + "/orders/" + orderID
-	body := this.client.Do("GET", uri, "", false)
+	body, err := this.client.Do("GET", uri, "", false)
+	if err!=nil{
+		log.Println(err)
+	}
 
 	order := Order{}
 	convertJSON(body, &order)
@@ -115,7 +142,10 @@ func (this *BittrexAPI) getOrder(orderID string) Order {
 
 func (this *BittrexAPI) getOrders(openOrClosed string) []Order {
 	uri := this.uri + "/orders/" + openOrClosed
-	body := this.client.Do("GET", uri, "", true)
+	body, err := this.client.Do("GET", uri, "", true)
+	if err!=nil{
+		log.Println(err)
+	}
 
 	var orders []Order
 	convertJSON(body, &orders)
@@ -123,15 +153,25 @@ func (this *BittrexAPI) getOrders(openOrClosed string) []Order {
 	return orders
 }
 
-//func (this *BittrexAPI) getOrdersOpen() {
-//	uri := this.uri + "/orders/open"
-//	body := this.client.Do("GET", uri, "", true)
-//
-//	var orders []Order
-//	convertJSON(body, &orders)
-//
-//	return orders
-//}
+//OrderType:LIMIT, MARKET, CEILING_LIMIT, CEILING_MARKET
+func (this *BittrexAPI) createOrder(order Order) []Order {
+	payload, err := json.Marshal(order)
+
+	if err != nil {
+		log.Printf("Error creating order json: %v", order)
+	}
+	uri := this.uri + "/orders/"
+	body, err := this.client.Do("POST", uri, string(payload), true)
+	if err!=nil{
+		log.Println(err)
+	}
+
+	var orders []Order
+	convertJSON(body, &orders)
+
+	return orders
+}
+
 //////////////////////////////////////////
 func convertJSON(body []byte, item interface{}) {
 	if err := json.Unmarshal(body, &item); err != nil {
@@ -206,6 +246,7 @@ type Order struct {
 	CreatedAt     string          `json:"createdAt"`
 	UpdatedAt     string          `json:"updatedAt"`
 	ClosedAt      string          `json:"closedAt"`
+	UseAwards     bool            `json:"useAwards"`
 	OrderToCancel struct {
 		OrderType string `json:"type"`
 		ID        string `json:"id"`

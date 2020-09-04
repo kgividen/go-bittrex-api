@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"net/http"
 	"testing"
 
@@ -214,48 +215,48 @@ func (this *BittrexAPIFixture) TestGetOrders() {
 
 type fakeBittrexClient struct{}
 
-func (this *fakeBittrexClient) Do(method, uri, payload string, authenticate bool) []byte {
+func (this *fakeBittrexClient) Do(method, uri, payload string, authenticate bool) ([]byte, error) {
 	if uri == "/balances" {
-		return []byte("[{\"currencySymbol\": \"BTC\",\"total\": \"0.00000000\",\"available\": \"0.00000000\",\"updatedAt\": \"2019-10-29T20:25:10.16Z\"},{\"currencySymbol\": \"LTC\",\"total\": \"0\",\"available\": \"0\",\"updatedAt\": \"2020-09-03T21:27:53.8210894Z\"}]")
+		return []byte("[{\"currencySymbol\": \"BTC\",\"total\": \"0.00000000\",\"available\": \"0.00000000\",\"updatedAt\": \"2019-10-29T20:25:10.16Z\"},{\"currencySymbol\": \"LTC\",\"total\": \"0\",\"available\": \"0\",\"updatedAt\": \"2020-09-03T21:27:53.8210894Z\"}]"), nil
 	}
 
 	if uri == "/markets/fakesymbol" {
-		return []byte("{\"symbol\":\"ETH-BTC\",\"baseCurrencySymbol\":\"ETH\",\"quoteCurrencySymbol\":\"BTC\",\"minTradeSize\":\"0.01000000\",\"precision\":8,\"status\":\"ONLINE\",\"createdAt\":\"2015-08-14T09:02:24.817Z\",\"notice\":\"\",\"prohibitedIn\":[],\"associatedTermsOfService\":[]}")
+		return []byte("{\"symbol\":\"ETH-BTC\",\"baseCurrencySymbol\":\"ETH\",\"quoteCurrencySymbol\":\"BTC\",\"minTradeSize\":\"0.01000000\",\"precision\":8,\"status\":\"ONLINE\",\"createdAt\":\"2015-08-14T09:02:24.817Z\",\"notice\":\"\",\"prohibitedIn\":[],\"associatedTermsOfService\":[]}"), nil
 	}
 
 	if uri == "/markets" {
-		return []byte("[{\"symbol\": \"4ART-BTC\",\"baseCurrencySymbol\": \"4ART\",\"quoteCurrencySymbol\": \"BTC\",\"minTradeSize\": \"10.00000000\",\"precision\": 8,\"status\": \"ONLINE\",\"createdAt\": \"2020-06-10T15:05:29.833Z\",\"notice\": \"\",\"prohibitedIn\": [\"US\"]},{\"symbol\": \"4ART-USDT\",\"baseCurrencySymbol\": \"4ART\",\"quoteCurrencySymbol\": \"USDT\",\"minTradeSize\": \"10.00000000\",\"precision\": 5,\"status\": \"ONLINE\",\"createdAt\": \"2020-06-10T15:05:40.98Z\",\"notice\": \"\",\"prohibitedIn\": [\"US\"]}]")
+		return []byte("[{\"symbol\": \"4ART-BTC\",\"baseCurrencySymbol\": \"4ART\",\"quoteCurrencySymbol\": \"BTC\",\"minTradeSize\": \"10.00000000\",\"precision\": 8,\"status\": \"ONLINE\",\"createdAt\": \"2020-06-10T15:05:29.833Z\",\"notice\": \"\",\"prohibitedIn\": [\"US\"]},{\"symbol\": \"4ART-USDT\",\"baseCurrencySymbol\": \"4ART\",\"quoteCurrencySymbol\": \"USDT\",\"minTradeSize\": \"10.00000000\",\"precision\": 5,\"status\": \"ONLINE\",\"createdAt\": \"2020-06-10T15:05:40.98Z\",\"notice\": \"\",\"prohibitedIn\": [\"US\"]}]"), nil
 	}
 
 	if uri == "/markets/fakesymbol/summary" {
-		return []byte("{\"symbol\":\"ETH-BTC\",\"high\":\"0.03894964\",\"low\":\"0.03650000\",\"volume\":\"18494.04035144\",\"quoteVolume\":\"696.42899671\",\"percentChange\":\"-3.33\",\"updatedAt\":\"2020-09-04T04:37:45.107Z\"}")
+		return []byte("{\"symbol\":\"ETH-BTC\",\"high\":\"0.03894964\",\"low\":\"0.03650000\",\"volume\":\"18494.04035144\",\"quoteVolume\":\"696.42899671\",\"percentChange\":\"-3.33\",\"updatedAt\":\"2020-09-04T04:37:45.107Z\"}"), nil
 	}
 
 	if uri == "/markets/summaries" {
-		return []byte("[{\"symbol\": \"4ART-BTC\",\"high\": \"0.00000275\",\"low\": \"0.00000249\",\"volume\": \"54499.59344453\",\"quoteVolume\": \"0.13917073\",\"percentChange\": \"10.44\",\"updatedAt\": \"2020-09-04T04:58:55.447Z\"},{\"symbol\": \"4ART-USDT\",\"high\": \"0.02880000\",\"low\": \"0.02667000\",\"volume\": \"48259.53706735\",\"quoteVolume\": \"1320.75839607\",\"percentChange\": \"-6.11\",\"updatedAt\": \"2020-09-04T04:33:20.01Z\"}]")
+		return []byte("[{\"symbol\": \"4ART-BTC\",\"high\": \"0.00000275\",\"low\": \"0.00000249\",\"volume\": \"54499.59344453\",\"quoteVolume\": \"0.13917073\",\"percentChange\": \"10.44\",\"updatedAt\": \"2020-09-04T04:58:55.447Z\"},{\"symbol\": \"4ART-USDT\",\"high\": \"0.02880000\",\"low\": \"0.02667000\",\"volume\": \"48259.53706735\",\"quoteVolume\": \"1320.75839607\",\"percentChange\": \"-6.11\",\"updatedAt\": \"2020-09-04T04:33:20.01Z\"}]"), nil
 	}
 
 	if uri == "/markets/fakesymbol/ticker" {
-		return []byte("{\"symbol\":\"ETH-BTC\",\"lastTradeRate\":\"0.03760069\",\"bidRate\":\"0.03760103\",\"askRate\":\"0.03762798\"}")
+		return []byte("{\"symbol\":\"ETH-BTC\",\"lastTradeRate\":\"0.03760069\",\"bidRate\":\"0.03760103\",\"askRate\":\"0.03762798\"}"), nil
 	}
 
 	if uri == "/markets/tickers" {
-		return []byte("[{\"symbol\": \"ETH-BTC\",\"lastTradeRate\": \"0.03760069\",\"bidRate\": \"0.03760103\",\"askRate\": \"0.03762798\"},{\"symbol\": \"ETH-FAKE\",\"lastTradeRate\": \"1.03760069\",\"bidRate\": \"1.03760103\",\"askRate\": \"1.03762798\"}]")
+		return []byte("[{\"symbol\": \"ETH-BTC\",\"lastTradeRate\": \"0.03760069\",\"bidRate\": \"0.03760103\",\"askRate\": \"0.03762798\"},{\"symbol\": \"ETH-FAKE\",\"lastTradeRate\": \"1.03760069\",\"bidRate\": \"1.03760103\",\"askRate\": \"1.03762798\"}]"), nil
 	}
 
 	if uri == "/orders/fakeOrder" {
-		return []byte("{\"id\": \"55eb2c82-4184-4a24-8b6e-ee154b2f7eaf\",\"marketSymbol\": \"XRP-BTC\",\"direction\": \"BUY\",\"type\": \"LIMIT\",\"quantity\": \"77.53046131\",\"limit\": \"0.00003528\",\"timeInForce\": \"GOOD_TIL_CANCELLED\",\"fillQuantity\": \"77.53046131\",\"commission\": \"0.00000682\",\"proceeds\": \"0.00272829\",\"status\": \"CLOSED\",\"createdAt\": \"2017-10-20T18:27:20.747Z\",\"updatedAt\": \"2017-10-20T18:27:20.763Z\",\"closedAt\": \"2017-10-20T18:27:20.763Z\"}")
+		return []byte("{\"id\": \"55eb2c82-4184-4a24-8b6e-ee154b2f7eaf\",\"marketSymbol\": \"XRP-BTC\",\"direction\": \"BUY\",\"type\": \"LIMIT\",\"quantity\": \"77.53046131\",\"limit\": \"0.00003528\",\"timeInForce\": \"GOOD_TIL_CANCELLED\",\"fillQuantity\": \"77.53046131\",\"commission\": \"0.00000682\",\"proceeds\": \"0.00272829\",\"status\": \"CLOSED\",\"createdAt\": \"2017-10-20T18:27:20.747Z\",\"updatedAt\": \"2017-10-20T18:27:20.763Z\",\"closedAt\": \"2017-10-20T18:27:20.763Z\"}"), nil
 	}
 
 	if uri == "/orders/open" {
-		return []byte("[{\"id\": \"55eb2c82-4184-4a24-8b6e-ee154b2f7eaf\",\"marketSymbol\": \"XRP-BTC\",\"direction\": \"BUY\",\"type\": \"LIMIT\",\"quantity\": \"77.53046131\",\"limit\": \"0.00003528\",\"timeInForce\": \"GOOD_TIL_CANCELLED\",\"fillQuantity\": \"77.53046131\",\"commission\": \"0.00000682\",\"proceeds\": \"0.00272829\",\"status\": \"OPEN\",\"createdAt\": \"2017-10-20T18:27:20.747Z\",\"updatedAt\": \"2017-10-20T18:27:20.763Z\",\"closedAt\": \"2017-10-20T18:27:20.763Z\"}]")
+		return []byte("[{\"id\": \"55eb2c82-4184-4a24-8b6e-ee154b2f7eaf\",\"marketSymbol\": \"XRP-BTC\",\"direction\": \"BUY\",\"type\": \"LIMIT\",\"quantity\": \"77.53046131\",\"limit\": \"0.00003528\",\"timeInForce\": \"GOOD_TIL_CANCELLED\",\"fillQuantity\": \"77.53046131\",\"commission\": \"0.00000682\",\"proceeds\": \"0.00272829\",\"status\": \"OPEN\",\"createdAt\": \"2017-10-20T18:27:20.747Z\",\"updatedAt\": \"2017-10-20T18:27:20.763Z\",\"closedAt\": \"2017-10-20T18:27:20.763Z\"}]"), nil
 	}
 
 	if uri == "/orders/closed" {
-		return []byte("[{\"id\": \"55eb2c82-4184-4a24-8b6e-ee154b2f7eaf\",\"marketSymbol\": \"XRP-BTC\",\"direction\": \"BUY\",\"type\": \"LIMIT\",\"quantity\": \"77.53046131\",\"limit\": \"0.00003528\",\"timeInForce\": \"GOOD_TIL_CANCELLED\",\"fillQuantity\": \"77.53046131\",\"commission\": \"0.00000682\",\"proceeds\": \"0.00272829\",\"status\": \"CLOSED\",\"createdAt\": \"2017-10-20T18:27:20.747Z\",\"updatedAt\": \"2017-10-20T18:27:20.763Z\",\"closedAt\": \"2017-10-20T18:27:20.763Z\"}]")
+		return []byte("[{\"id\": \"55eb2c82-4184-4a24-8b6e-ee154b2f7eaf\",\"marketSymbol\": \"XRP-BTC\",\"direction\": \"BUY\",\"type\": \"LIMIT\",\"quantity\": \"77.53046131\",\"limit\": \"0.00003528\",\"timeInForce\": \"GOOD_TIL_CANCELLED\",\"fillQuantity\": \"77.53046131\",\"commission\": \"0.00000682\",\"proceeds\": \"0.00272829\",\"status\": \"CLOSED\",\"createdAt\": \"2017-10-20T18:27:20.747Z\",\"updatedAt\": \"2017-10-20T18:27:20.763Z\",\"closedAt\": \"2017-10-20T18:27:20.763Z\"}]"), nil
 	}
 
-	return nil
+	return nil, errors.New("test resource not found")
 }
 
 func (this *fakeBittrexClient) authenticate(request *http.Request, payload string, uri string, method string) error {
