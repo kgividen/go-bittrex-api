@@ -97,7 +97,7 @@ func (this *BittrexAPIFixture) TestGetMarketSummary() {
 	result := bittrex.getMarketSummary("fakesymbol")
 	this.So(result, should.Resemble, MarketSummary{
 		Symbol:        "ETH-BTC",
-		High:          decimal.NewFromFloatWithExponent(0.03894964,-8),
+		High:          decimal.NewFromFloatWithExponent(0.03894964, -8),
 		Low:           decimal.NewFromFloatWithExponent(0.03650000, -8),
 		Volume:        decimal.NewFromFloat(18494.04035144),
 		QuoteVolume:   decimal.NewFromFloat(696.42899671),
@@ -164,6 +164,52 @@ func (this *BittrexAPIFixture) TestGetMarketTickers() {
 	})
 }
 
+func (this *BittrexAPIFixture) TestGetOrder() {
+	client := &fakeBittrexClient{}
+	bittrex := NewBittrexAPI(client, "")
+	result := bittrex.getOrder("fakeOrder")
+	this.So(result, should.Resemble, Order{
+		OrderID:      "55eb2c82-4184-4a24-8b6e-ee154b2f7eaf",
+		MarketSymbol: "XRP-BTC",
+		Direction:    "BUY",
+		OrderType:    "LIMIT",
+		Quantity:     decimal.NewFromFloatWithExponent(77.53046131, -8),
+		Limit:        decimal.NewFromFloatWithExponent(0.00003528, -8),
+		TimeInForce:  "GOOD_TIL_CANCELLED",
+		FillQuantity: decimal.NewFromFloatWithExponent(77.53046131, -8),
+		Commission:   decimal.NewFromFloatWithExponent(0.00000682, -8),
+		Proceeds:     decimal.NewFromFloatWithExponent(0.00272829, -8),
+		Status:       "CLOSED",
+		CreatedAt:    "2017-10-20T18:27:20.747Z",
+		UpdatedAt:    "2017-10-20T18:27:20.763Z",
+		ClosedAt:     "2017-10-20T18:27:20.763Z",
+	})
+}
+func (this *BittrexAPIFixture) TestGetOrders() {
+	client := &fakeBittrexClient{}
+	bittrex := NewBittrexAPI(client, "")
+	result := bittrex.getOrders("open")
+	this.So(result, should.Resemble, []Order{{
+		OrderID:      "55eb2c82-4184-4a24-8b6e-ee154b2f7eaf",
+		MarketSymbol: "XRP-BTC",
+		Direction:    "BUY",
+		OrderType:    "LIMIT",
+		Quantity:     decimal.NewFromFloatWithExponent(77.53046131, -8),
+		Limit:        decimal.NewFromFloatWithExponent(0.00003528, -8),
+		TimeInForce:  "GOOD_TIL_CANCELLED",
+		FillQuantity: decimal.NewFromFloatWithExponent(77.53046131, -8),
+		Commission:   decimal.NewFromFloatWithExponent(0.00000682, -8),
+		Proceeds:     decimal.NewFromFloatWithExponent(0.00272829, -8),
+		Status:       "OPEN",
+		CreatedAt:    "2017-10-20T18:27:20.747Z",
+		UpdatedAt:    "2017-10-20T18:27:20.763Z",
+		ClosedAt:     "2017-10-20T18:27:20.763Z",
+	}})
+
+	result = bittrex.getOrders("closed")
+	this.So(result[0].Status, should.Equal, "CLOSED")
+}
+
 ///////////////////////////////////////
 
 type fakeBittrexClient struct{}
@@ -195,6 +241,18 @@ func (this *fakeBittrexClient) Do(method, uri, payload string, authenticate bool
 
 	if uri == "/markets/tickers" {
 		return []byte("[{\"symbol\": \"ETH-BTC\",\"lastTradeRate\": \"0.03760069\",\"bidRate\": \"0.03760103\",\"askRate\": \"0.03762798\"},{\"symbol\": \"ETH-FAKE\",\"lastTradeRate\": \"1.03760069\",\"bidRate\": \"1.03760103\",\"askRate\": \"1.03762798\"}]")
+	}
+
+	if uri == "/orders/fakeOrder" {
+		return []byte("{\"id\": \"55eb2c82-4184-4a24-8b6e-ee154b2f7eaf\",\"marketSymbol\": \"XRP-BTC\",\"direction\": \"BUY\",\"type\": \"LIMIT\",\"quantity\": \"77.53046131\",\"limit\": \"0.00003528\",\"timeInForce\": \"GOOD_TIL_CANCELLED\",\"fillQuantity\": \"77.53046131\",\"commission\": \"0.00000682\",\"proceeds\": \"0.00272829\",\"status\": \"CLOSED\",\"createdAt\": \"2017-10-20T18:27:20.747Z\",\"updatedAt\": \"2017-10-20T18:27:20.763Z\",\"closedAt\": \"2017-10-20T18:27:20.763Z\"}")
+	}
+
+	if uri == "/orders/open" {
+		return []byte("[{\"id\": \"55eb2c82-4184-4a24-8b6e-ee154b2f7eaf\",\"marketSymbol\": \"XRP-BTC\",\"direction\": \"BUY\",\"type\": \"LIMIT\",\"quantity\": \"77.53046131\",\"limit\": \"0.00003528\",\"timeInForce\": \"GOOD_TIL_CANCELLED\",\"fillQuantity\": \"77.53046131\",\"commission\": \"0.00000682\",\"proceeds\": \"0.00272829\",\"status\": \"OPEN\",\"createdAt\": \"2017-10-20T18:27:20.747Z\",\"updatedAt\": \"2017-10-20T18:27:20.763Z\",\"closedAt\": \"2017-10-20T18:27:20.763Z\"}]")
+	}
+
+	if uri == "/orders/closed" {
+		return []byte("[{\"id\": \"55eb2c82-4184-4a24-8b6e-ee154b2f7eaf\",\"marketSymbol\": \"XRP-BTC\",\"direction\": \"BUY\",\"type\": \"LIMIT\",\"quantity\": \"77.53046131\",\"limit\": \"0.00003528\",\"timeInForce\": \"GOOD_TIL_CANCELLED\",\"fillQuantity\": \"77.53046131\",\"commission\": \"0.00000682\",\"proceeds\": \"0.00272829\",\"status\": \"CLOSED\",\"createdAt\": \"2017-10-20T18:27:20.747Z\",\"updatedAt\": \"2017-10-20T18:27:20.763Z\",\"closedAt\": \"2017-10-20T18:27:20.763Z\"}]")
 	}
 
 	return nil

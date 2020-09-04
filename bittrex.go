@@ -103,6 +103,35 @@ func (this *BittrexAPI) getBalances() []Balance {
 	return balances
 }
 
+func (this *BittrexAPI) getOrder(orderID string) Order {
+	uri := this.uri + "/orders/" + orderID
+	body := this.client.Do("GET", uri, "", false)
+
+	order := Order{}
+	convertJSON(body, &order)
+
+	return order
+}
+
+func (this *BittrexAPI) getOrders(openOrClosed string) []Order {
+	uri := this.uri + "/orders/" + openOrClosed
+	body := this.client.Do("GET", uri, "", true)
+
+	var orders []Order
+	convertJSON(body, &orders)
+
+	return orders
+}
+
+//func (this *BittrexAPI) getOrdersOpen() {
+//	uri := this.uri + "/orders/open"
+//	body := this.client.Do("GET", uri, "", true)
+//
+//	var orders []Order
+//	convertJSON(body, &orders)
+//
+//	return orders
+//}
 //////////////////////////////////////////
 func convertJSON(body []byte, item interface{}) {
 	if err := json.Unmarshal(body, &item); err != nil {
@@ -158,4 +187,27 @@ type MarketTicker struct {
 	LastTradeRate decimal.Decimal `json:"lastTradeRate,string"`
 	BidRate       decimal.Decimal `json:"bidRate,string"`
 	AskRate       decimal.Decimal `json:"askRate,string"`
+}
+
+type Order struct {
+	OrderID       string          `json:"id"`
+	MarketSymbol  string          `json:"marketSymbol"`
+	Direction     string          `json:"direction"`
+	OrderType     string          `json:"type"`
+	Quantity      decimal.Decimal `json:"quantity,string"`
+	Limit         decimal.Decimal `json:"limit,string"`
+	Ceiling       decimal.Decimal `json:"ceiling,string"`
+	TimeInForce   string          `json:"timeInForce"`
+	ClientOrderId string          `json:"clientOrderId"`
+	FillQuantity  decimal.Decimal `json:"fillQuantity,string"`
+	Commission    decimal.Decimal `json:"commission,string"`
+	Proceeds      decimal.Decimal `json:"proceeds,string"`
+	Status        string          `json:"status"`
+	CreatedAt     string          `json:"createdAt"`
+	UpdatedAt     string          `json:"updatedAt"`
+	ClosedAt      string          `json:"closedAt"`
+	OrderToCancel struct {
+		OrderType string `json:"type"`
+		ID        string `json:"id"`
+	} `json:"orderToCancel"`
 }
