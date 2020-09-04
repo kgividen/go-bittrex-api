@@ -24,6 +24,7 @@ func newBittrexClient(apiKey string, secretKey string, client Http) *bittrexClie
 }
 
 func (this *bittrexClient) Do(method string, uri string, payload string, authenticate bool) []byte {
+
 	request, err := http.NewRequest(method, uri, strings.NewReader(payload))
 	if err != nil {
 		return nil

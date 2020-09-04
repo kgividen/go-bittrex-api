@@ -15,5 +15,7 @@ func main() {
 	api := NewBittrexAPI(client, uri)
 	//log.Println(api.getCurrency("BTC"))
 	//log.Println(api.getBalances())
-	log.Printf("getMarket: %v", api.getMarket("ETH-BTC"))
+	//log.Printf("getMarket: %v", api.getMarket("ETH-BTC"))
+	//log.Printf("getMarketSummary: %v", api.getMarketSummary("ETH-BTC"))
+	log.Printf("getMarketSummaries: %v", api.getMarketSummaries())
 }

@@ -41,7 +41,25 @@ func (this *BittrexAPI) getMarkets() []Market {
 	return markets
 }
 
+func (this *BittrexAPI) getMarketSummary(symbol string) MarketSummary {
+	uri := this.uri + "/markets/" + symbol + "/summary"
+	body := this.client.Do("GET", uri, "", false)
 
+	marketSummary := MarketSummary{}
+	convertJSON(body, &marketSummary)
+
+	return marketSummary
+}
+
+func (this *BittrexAPI) getMarketSummaries() []MarketSummary {
+	uri := this.uri + "/markets/summaries"
+	body := this.client.Do("GET", uri, "", false)
+
+	var marketSummaries []MarketSummary
+	convertJSON(body, &marketSummaries)
+
+	return marketSummaries
+}
 
 func (this *BittrexAPI) getCurrency(symbol string) Currency {
 	uri := this.uri + "/currencies/" + symbol
@@ -62,6 +80,7 @@ func (this *BittrexAPI) getBalances() []Balance {
 
 	return balances
 }
+
 //////////////////////////////////////////
 func convertJSON(body []byte, item interface{}) {
 	if err := json.Unmarshal(body, &item); err != nil {
@@ -100,4 +119,14 @@ type Market struct {
 	CreatedAt           string   `json:"createdAt"`
 	Notice              string   `json:"notice"`
 	ProhibitedIn        []string `json:"prohibitedIn"`
+}
+
+type MarketSummary struct {
+	Symbol        string  `json:"symbol"`
+	High          float64 `json:"high,string"`
+	Low           float64 `json:"low,string"`
+	Volume        float64 `json:"volume,string"`
+	QuoteVolume   float64 `json:"quoteVolume,string"`
+	PercentChange float64 `json:"percentChange,string"`
+	UpdatedAt     string  `json:"updatedAt"`
 }
