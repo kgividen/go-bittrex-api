@@ -10,27 +10,6 @@ type api interface {
 	getBalances() []Balance
 }
 
-//////////////////////////////////////////
-type Currency struct {
-	Symbol           string `json:"symbol"`
-	Name             string `json:"name"`
-	CoinType         string `json:"coinType"`
-	Status           string `json:"status"`
-	MinConfirmations string `json:"minConfirmations"`
-	Notice           string `json:"notice"`
-	TxFee            string `json:"txFee"`
-	LogoUrl          string `json:"logoUrl"`
-	ProhibitedIn     string `json:"prohibitedIn"`
-	BaseAddress      string `json:"baseAddress"`
-}
-
-type Balance struct {
-	CurrencySymbol string `json:"currencySymbol"`
-	Total          string `json:"total"`
-	Available      string `json:"available"`
-	UpdatedAt      string `json:"updatedAt"`
-}
-
 type Client interface {
 	Do(method, uri, payload string, authenticate bool) []byte
 	authenticate(request *http.Request, payload string, uri string, method string) error

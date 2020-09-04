@@ -44,6 +44,22 @@ func (this *BittrexAPIFixture) TestGetBalances() {
 		},
 	})
 }
+func (this *BittrexAPIFixture) TestGetMarket() {
+	client := &fakeBittrexClient{}
+	bittrex := NewBittrexAPI(client, "")
+	result := bittrex.getMarket("")
+	this.So(result, should.Resemble, Market{
+		Symbol:              "ETH-BTC",
+		BaseCurrencySymbol:  "ETH",
+		QuoteCurrencySymbol: "BTC",
+		MinTradeSize:        "0.01000000",
+		Precision:           8,
+		Status:              "ONLINE",
+		CreatedAt:           "2015-08-14T09:02:24.817Z",
+		Notice:              "",
+		ProhibitedIn:        []string{},
+	})
+}
 
 ///////////////////////////////////////
 
@@ -52,6 +68,10 @@ type fakeBittrexClient struct{}
 func (this *fakeBittrexClient) Do(method, uri, payload string, authenticate bool) []byte {
 	if uri == "/balances" {
 		return []byte("[{\"currencySymbol\": \"BTC\",\"total\": \"0.00000000\",\"available\": \"0.00000000\",\"updatedAt\": \"2019-10-29T20:25:10.16Z\"},{\"currencySymbol\": \"LTC\",\"total\": \"0\",\"available\": \"0\",\"updatedAt\": \"2020-09-03T21:27:53.8210894Z\"}]")
+	}
+
+	if uri == "/markets/" {
+		return []byte("{\"symbol\":\"ETH-BTC\",\"baseCurrencySymbol\":\"ETH\",\"quoteCurrencySymbol\":\"BTC\",\"minTradeSize\":\"0.01000000\",\"precision\":8,\"status\":\"ONLINE\",\"createdAt\":\"2015-08-14T09:02:24.817Z\",\"notice\":\"\",\"prohibitedIn\":[],\"associatedTermsOfService\":[]}")
 	}
 	return nil
 }
