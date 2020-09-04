@@ -19,7 +19,8 @@ func main() {
 	//log.Printf("getMarketSummary: %v", api.getMarketSummary("ETH-BTC"))
 	//log.Printf("getMarketSummaries: %v", api.getMarketSummaries())
 	//log.Printf("getMarketTicker: %v", api.getMarketTicker("ETH-BTC"))
-	log.Printf("getORders: %v", api.getOrders("Open"))
-	log.Printf("getORders: %v", api.getOrders("Closed"))
+	//log.Printf("getORders: %v,", api.getOrders("Open"))
+	orders, _ := api.getOrders("Closed")
+	log.Printf("getORders: %v", orders)
 
 }

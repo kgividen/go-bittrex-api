@@ -24,14 +24,16 @@ func (this *BittrexAPIFixture) Setup() {}
 func (this *BittrexAPIFixture) TestGetCurrency() {
 	client := &fakeBittrexClient{}
 	bittrex := NewBittrexAPI(client, "fakeURL")
-	result := bittrex.getCurrency("btc")
+	result, err := bittrex.getCurrency("btc")
+	this.So(err, should.BeNil)
 	this.So(result, should.Resemble, Currency{})
 }
 
 func (this *BittrexAPIFixture) TestGetBalances() {
 	client := &fakeBittrexClient{}
 	bittrex := NewBittrexAPI(client, "")
-	result := bittrex.getBalances()
+	result, err := bittrex.getBalances()
+	this.So(err, should.BeNil)
 	this.So(result, should.Resemble, []Balance{
 		{
 			CurrencySymbol: "BTC",
@@ -49,7 +51,8 @@ func (this *BittrexAPIFixture) TestGetBalances() {
 func (this *BittrexAPIFixture) TestGetMarket() {
 	client := &fakeBittrexClient{}
 	bittrex := NewBittrexAPI(client, "")
-	result := bittrex.getMarket("fakesymbol")
+	result, err := bittrex.getMarket("fakesymbol")
+	this.So(err, should.BeNil)
 	this.So(result, should.Resemble, Market{
 		Symbol:              "ETH-BTC",
 		BaseCurrencySymbol:  "ETH",
@@ -66,7 +69,8 @@ func (this *BittrexAPIFixture) TestGetMarket() {
 func (this *BittrexAPIFixture) TestGetMarkets() {
 	client := &fakeBittrexClient{}
 	bittrex := NewBittrexAPI(client, "")
-	result := bittrex.getMarkets()
+	result, err := bittrex.getMarkets()
+	this.So(err, should.BeNil)
 	this.So(result, should.Resemble, []Market{
 		{
 			Symbol:              "4ART-BTC",
@@ -95,7 +99,8 @@ func (this *BittrexAPIFixture) TestGetMarkets() {
 func (this *BittrexAPIFixture) TestGetMarketSummary() {
 	client := &fakeBittrexClient{}
 	bittrex := NewBittrexAPI(client, "")
-	result := bittrex.getMarketSummary("fakesymbol")
+	result, err := bittrex.getMarketSummary("fakesymbol")
+	this.So(err, should.BeNil)
 	this.So(result, should.Resemble, MarketSummary{
 		Symbol:        "ETH-BTC",
 		High:          decimal.NewFromFloatWithExponent(0.03894964, -8),
@@ -110,7 +115,8 @@ func (this *BittrexAPIFixture) TestGetMarketSummary() {
 func (this *BittrexAPIFixture) TestGetMarketSummaries() {
 	client := &fakeBittrexClient{}
 	bittrex := NewBittrexAPI(client, "")
-	result := bittrex.getMarketSummaries()
+	result, err := bittrex.getMarketSummaries()
+	this.So(err, should.BeNil)
 
 	this.So(result, should.Resemble, []MarketSummary{
 		{
@@ -136,7 +142,8 @@ func (this *BittrexAPIFixture) TestGetMarketSummaries() {
 func (this *BittrexAPIFixture) TestGetMarketTicker() {
 	client := &fakeBittrexClient{}
 	bittrex := NewBittrexAPI(client, "")
-	result := bittrex.getMarketTicker("fakesymbol")
+	result, err := bittrex.getMarketTicker("fakesymbol")
+	this.So(err, should.BeNil)
 	this.So(result, should.Resemble, MarketTicker{
 		Symbol:        "ETH-BTC",
 		LastTradeRate: decimal.NewFromFloat(0.03760069),
@@ -148,7 +155,8 @@ func (this *BittrexAPIFixture) TestGetMarketTicker() {
 func (this *BittrexAPIFixture) TestGetMarketTickers() {
 	client := &fakeBittrexClient{}
 	bittrex := NewBittrexAPI(client, "")
-	result := bittrex.getMarketTickers()
+	result, err := bittrex.getMarketTickers()
+	this.So(err, should.BeNil)
 	this.So(result, should.Resemble, []MarketTicker{
 		{
 			Symbol:        "ETH-BTC",
@@ -168,7 +176,8 @@ func (this *BittrexAPIFixture) TestGetMarketTickers() {
 func (this *BittrexAPIFixture) TestGetOrder() {
 	client := &fakeBittrexClient{}
 	bittrex := NewBittrexAPI(client, "")
-	result := bittrex.getOrder("fakeOrder")
+	result, err := bittrex.getOrder("fakeOrder")
+	this.So(err, should.BeNil)
 	this.So(result, should.Resemble, Order{
 		OrderID:      "55eb2c82-4184-4a24-8b6e-ee154b2f7eaf",
 		MarketSymbol: "XRP-BTC",
@@ -189,7 +198,8 @@ func (this *BittrexAPIFixture) TestGetOrder() {
 func (this *BittrexAPIFixture) TestGetOrders() {
 	client := &fakeBittrexClient{}
 	bittrex := NewBittrexAPI(client, "")
-	result := bittrex.getOrders("open")
+	result, err := bittrex.getOrders("open")
+	this.So(err, should.BeNil)
 	this.So(result, should.Resemble, []Order{{
 		OrderID:      "55eb2c82-4184-4a24-8b6e-ee154b2f7eaf",
 		MarketSymbol: "XRP-BTC",
@@ -207,7 +217,8 @@ func (this *BittrexAPIFixture) TestGetOrders() {
 		ClosedAt:     "2017-10-20T18:27:20.763Z",
 	}})
 
-	result = bittrex.getOrders("closed")
+	result, err = bittrex.getOrders("closed")
+	this.So(err, should.BeNil)
 	this.So(result[0].Status, should.Equal, "CLOSED")
 }
 

@@ -6,8 +6,8 @@ import (
 )
 
 type api interface {
-	getCurrency(string) Currency
-	getBalances() []Balance
+	getCurrency(string) (Currency, error)
+	getBalances() ([]Balance, error)
 }
 
 type Client interface {
