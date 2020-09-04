@@ -3,6 +3,8 @@ package main
 import (
 	"encoding/json"
 	"log"
+
+	"github.com/shopspring/decimal"
 )
 
 type BittrexAPI struct {
@@ -142,18 +144,18 @@ type Market struct {
 }
 
 type MarketSummary struct {
-	Symbol        string  `json:"symbol"`
-	High          float64 `json:"high,string"`
-	Low           float64 `json:"low,string"`
-	Volume        float64 `json:"volume,string"`
-	QuoteVolume   float64 `json:"quoteVolume,string"`
-	PercentChange float64 `json:"percentChange,string"`
-	UpdatedAt     string  `json:"updatedAt"`
+	Symbol        string          `json:"symbol"`
+	High          decimal.Decimal `json:"high,string"`
+	Low           decimal.Decimal `json:"low,string"`
+	Volume        decimal.Decimal `json:"volume,string"`
+	QuoteVolume   decimal.Decimal `json:"quoteVolume,string"`
+	PercentChange decimal.Decimal `json:"percentChange,string"`
+	UpdatedAt     string          `json:"updatedAt"`
 }
 
 type MarketTicker struct {
-	Symbol        string  `json:"symbol"`
-	LastTradeRate float64 `json:"lastTradeRate,string"`
-	BidRate       float64 `json:"bidRate,string"`
-	AskRate       float64 `json:"askRate,string"`
+	Symbol        string          `json:"symbol"`
+	LastTradeRate decimal.Decimal `json:"lastTradeRate,string"`
+	BidRate       decimal.Decimal `json:"bidRate,string"`
+	AskRate       decimal.Decimal `json:"askRate,string"`
 }

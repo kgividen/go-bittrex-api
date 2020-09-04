@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"testing"
 
+	"github.com/shopspring/decimal"
 	"github.com/smartystreets/assertions/should"
 	"github.com/smartystreets/gunit"
 )
@@ -96,11 +97,11 @@ func (this *BittrexAPIFixture) TestGetMarketSummary() {
 	result := bittrex.getMarketSummary("fakesymbol")
 	this.So(result, should.Resemble, MarketSummary{
 		Symbol:        "ETH-BTC",
-		High:          0.03894964,
-		Low:           0.03650000,
-		Volume:        18494.04035144,
-		QuoteVolume:   696.42899671,
-		PercentChange: -3.33,
+		High:          decimal.NewFromFloatWithExponent(0.03894964,-8),
+		Low:           decimal.NewFromFloatWithExponent(0.03650000, -8),
+		Volume:        decimal.NewFromFloat(18494.04035144),
+		QuoteVolume:   decimal.NewFromFloat(696.42899671),
+		PercentChange: decimal.NewFromFloat(-3.33),
 		UpdatedAt:     "2020-09-04T04:37:45.107Z",
 	})
 }
@@ -113,19 +114,19 @@ func (this *BittrexAPIFixture) TestGetMarketSummaries() {
 	this.So(result, should.Resemble, []MarketSummary{
 		{
 			Symbol:        "4ART-BTC",
-			High:          0.00000275,
-			Low:           0.00000249,
-			Volume:        54499.59344453,
-			QuoteVolume:   0.13917073,
-			PercentChange: 10.44,
+			High:          decimal.NewFromFloat(0.00000275),
+			Low:           decimal.NewFromFloat(0.00000249),
+			Volume:        decimal.NewFromFloat(54499.59344453),
+			QuoteVolume:   decimal.NewFromFloat(0.13917073),
+			PercentChange: decimal.NewFromFloat(10.44),
 			UpdatedAt:     "2020-09-04T04:58:55.447Z",
 		}, {
 			Symbol:        "4ART-USDT",
-			High:          0.02880000,
-			Low:           0.02667000,
-			Volume:        48259.53706735,
-			QuoteVolume:   1320.75839607,
-			PercentChange: -6.11,
+			High:          decimal.NewFromFloatWithExponent(0.02880000, -8),
+			Low:           decimal.NewFromFloatWithExponent(0.02667000, -8),
+			Volume:        decimal.NewFromFloat(48259.53706735),
+			QuoteVolume:   decimal.NewFromFloat(1320.75839607),
+			PercentChange: decimal.NewFromFloat(-6.11),
 			UpdatedAt:     "2020-09-04T04:33:20.01Z",
 		},
 	})
@@ -137,9 +138,9 @@ func (this *BittrexAPIFixture) TestGetMarketTicker() {
 	result := bittrex.getMarketTicker("fakesymbol")
 	this.So(result, should.Resemble, MarketTicker{
 		Symbol:        "ETH-BTC",
-		LastTradeRate: 0.03760069,
-		BidRate:       0.03760103,
-		AskRate:       0.03762798,
+		LastTradeRate: decimal.NewFromFloat(0.03760069),
+		BidRate:       decimal.NewFromFloat(0.03760103),
+		AskRate:       decimal.NewFromFloat(0.03762798),
 	})
 }
 
@@ -150,15 +151,15 @@ func (this *BittrexAPIFixture) TestGetMarketTickers() {
 	this.So(result, should.Resemble, []MarketTicker{
 		{
 			Symbol:        "ETH-BTC",
-			LastTradeRate: 0.03760069,
-			BidRate:       0.03760103,
-			AskRate:       0.03762798,
+			LastTradeRate: decimal.NewFromFloat(0.03760069),
+			BidRate:       decimal.NewFromFloat(0.03760103),
+			AskRate:       decimal.NewFromFloat(0.03762798),
 		},
 		{
 			Symbol:        "ETH-FAKE",
-			LastTradeRate: 1.03760069,
-			BidRate:       1.03760103,
-			AskRate:       1.03762798,
+			LastTradeRate: decimal.NewFromFloat(1.03760069),
+			BidRate:       decimal.NewFromFloat(1.03760103),
+			AskRate:       decimal.NewFromFloat(1.03762798),
 		},
 	})
 }
