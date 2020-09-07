@@ -103,11 +103,11 @@ func (this *BittrexAPIFixture) TestGetMarketSummary() {
 	this.So(err, should.BeNil)
 	this.So(result, should.Resemble, MarketSummary{
 		Symbol:        "ETH-BTC",
-		High:          decimal.NewFromFloatWithExponent(0.03894964, -8),
-		Low:           decimal.NewFromFloatWithExponent(0.03650000, -8),
-		Volume:        decimal.NewFromFloat(18494.04035144),
-		QuoteVolume:   decimal.NewFromFloat(696.42899671),
-		PercentChange: decimal.NewFromFloat(-3.33),
+		High:          &Dec{decimal.NewFromFloatWithExponent(0.03894964, -8)},
+		Low:           &Dec{decimal.NewFromFloatWithExponent(0.03650000, -8)},
+		Volume:        &Dec{decimal.NewFromFloat(18494.04035144)},
+		QuoteVolume:   &Dec{decimal.NewFromFloat(696.42899671)},
+		PercentChange: &Dec{decimal.NewFromFloat(-3.33)},
 		UpdatedAt:     "2020-09-04T04:37:45.107Z",
 	})
 }
@@ -121,19 +121,19 @@ func (this *BittrexAPIFixture) TestGetMarketSummaries() {
 	this.So(result, should.Resemble, []MarketSummary{
 		{
 			Symbol:        "4ART-BTC",
-			High:          decimal.NewFromFloat(0.00000275),
-			Low:           decimal.NewFromFloat(0.00000249),
-			Volume:        decimal.NewFromFloat(54499.59344453),
-			QuoteVolume:   decimal.NewFromFloat(0.13917073),
-			PercentChange: decimal.NewFromFloat(10.44),
+			High:          &Dec{decimal.NewFromFloat(0.00000275)},
+			Low:           &Dec{decimal.NewFromFloat(0.00000249)},
+			Volume:        &Dec{decimal.NewFromFloat(54499.59344453)},
+			QuoteVolume:   &Dec{decimal.NewFromFloat(0.13917073)},
+			PercentChange: &Dec{decimal.NewFromFloat(10.44)},
 			UpdatedAt:     "2020-09-04T04:58:55.447Z",
 		}, {
 			Symbol:        "4ART-USDT",
-			High:          decimal.NewFromFloatWithExponent(0.02880000, -8),
-			Low:           decimal.NewFromFloatWithExponent(0.02667000, -8),
-			Volume:        decimal.NewFromFloat(48259.53706735),
-			QuoteVolume:   decimal.NewFromFloat(1320.75839607),
-			PercentChange: decimal.NewFromFloat(-6.11),
+			High:          &Dec{decimal.NewFromFloatWithExponent(0.02880000, -8)},
+			Low:           &Dec{decimal.NewFromFloatWithExponent(0.02667000, -8)},
+			Volume:        &Dec{decimal.NewFromFloat(48259.53706735)},
+			QuoteVolume:   &Dec{decimal.NewFromFloat(1320.75839607)},
+			PercentChange: &Dec{decimal.NewFromFloat(-6.11)},
 			UpdatedAt:     "2020-09-04T04:33:20.01Z",
 		},
 	})
@@ -146,9 +146,9 @@ func (this *BittrexAPIFixture) TestGetMarketTicker() {
 	this.So(err, should.BeNil)
 	this.So(result, should.Resemble, MarketTicker{
 		Symbol:        "ETH-BTC",
-		LastTradeRate: decimal.NewFromFloat(0.03760069),
-		BidRate:       decimal.NewFromFloat(0.03760103),
-		AskRate:       decimal.NewFromFloat(0.03762798),
+		LastTradeRate: &Dec{decimal.NewFromFloat(0.03760069)},
+		BidRate:       &Dec{decimal.NewFromFloat(0.03760103)},
+		AskRate:       &Dec{decimal.NewFromFloat(0.03762798)},
 	})
 }
 
@@ -160,15 +160,15 @@ func (this *BittrexAPIFixture) TestGetMarketTickers() {
 	this.So(result, should.Resemble, []MarketTicker{
 		{
 			Symbol:        "ETH-BTC",
-			LastTradeRate: decimal.NewFromFloat(0.03760069),
-			BidRate:       decimal.NewFromFloat(0.03760103),
-			AskRate:       decimal.NewFromFloat(0.03762798),
+			LastTradeRate: &Dec{decimal.NewFromFloat(0.03760069)},
+			BidRate:       &Dec{decimal.NewFromFloat(0.03760103)},
+			AskRate:       &Dec{decimal.NewFromFloat(0.03762798)},
 		},
 		{
 			Symbol:        "ETH-FAKE",
-			LastTradeRate: decimal.NewFromFloat(1.03760069),
-			BidRate:       decimal.NewFromFloat(1.03760103),
-			AskRate:       decimal.NewFromFloat(1.03762798),
+			LastTradeRate: &Dec{decimal.NewFromFloat(1.03760069)},
+			BidRate:       &Dec{decimal.NewFromFloat(1.03760103)},
+			AskRate:       &Dec{decimal.NewFromFloat(1.03762798)},
 		},
 	})
 }
@@ -183,12 +183,12 @@ func (this *BittrexAPIFixture) TestGetOrder() {
 		MarketSymbol: "XRP-BTC",
 		Direction:    "BUY",
 		OrderType:    "LIMIT",
-		Quantity:     decimal.NewFromFloatWithExponent(77.53046131, -8),
-		Limit:        decimal.NewFromFloatWithExponent(0.00003528, -8),
+		Quantity:     &Dec{decimal.NewFromFloatWithExponent(77.53046131, -8)},
+		Limit:        &Dec{decimal.NewFromFloatWithExponent(0.00003528, -8)},
 		TimeInForce:  "GOOD_TIL_CANCELLED",
-		FillQuantity: decimal.NewFromFloatWithExponent(77.53046131, -8),
-		Commission:   decimal.NewFromFloatWithExponent(0.00000682, -8),
-		Proceeds:     decimal.NewFromFloatWithExponent(0.00272829, -8),
+		FillQuantity: &Dec{decimal.NewFromFloatWithExponent(77.53046131, -8)},
+		Commission:   &Dec{decimal.NewFromFloatWithExponent(0.00000682, -8)},
+		Proceeds:     &Dec{decimal.NewFromFloatWithExponent(0.00272829, -8)},
 		Status:       "CLOSED",
 		CreatedAt:    "2017-10-20T18:27:20.747Z",
 		UpdatedAt:    "2017-10-20T18:27:20.763Z",
@@ -205,12 +205,12 @@ func (this *BittrexAPIFixture) TestGetOrders() {
 		MarketSymbol: "XRP-BTC",
 		Direction:    "BUY",
 		OrderType:    "LIMIT",
-		Quantity:     decimal.NewFromFloatWithExponent(77.53046131, -8),
-		Limit:        decimal.NewFromFloatWithExponent(0.00003528, -8),
+		Quantity:     &Dec{decimal.NewFromFloatWithExponent(77.53046131, -8)},
+		Limit:        &Dec{decimal.NewFromFloatWithExponent(0.00003528, -8)},
 		TimeInForce:  "GOOD_TIL_CANCELLED",
-		FillQuantity: decimal.NewFromFloatWithExponent(77.53046131, -8),
-		Commission:   decimal.NewFromFloatWithExponent(0.00000682, -8),
-		Proceeds:     decimal.NewFromFloatWithExponent(0.00272829, -8),
+		FillQuantity: &Dec{decimal.NewFromFloatWithExponent(77.53046131, -8)},
+		Commission:   &Dec{decimal.NewFromFloatWithExponent(0.00000682, -8)},
+		Proceeds:     &Dec{decimal.NewFromFloatWithExponent(0.00272829, -8)},
 		Status:       "OPEN",
 		CreatedAt:    "2017-10-20T18:27:20.747Z",
 		UpdatedAt:    "2017-10-20T18:27:20.763Z",
