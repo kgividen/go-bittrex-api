@@ -18,7 +18,7 @@ type bittrexClient struct {
 	client    Http
 }
 
-func newBittrexClient(apiKey string, secretKey string, client Http) *bittrexClient {
+func NewBittrexClient(apiKey string, secretKey string, client Http) *bittrexClient {
 	return &bittrexClient{apiKey: apiKey, secretKey: secretKey, client: client}
 }
 
