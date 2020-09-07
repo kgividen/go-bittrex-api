@@ -1,4 +1,4 @@
-package main
+package bittrex
 
 import (
 	"log"
@@ -13,7 +13,7 @@ func main() {
 	apiKey := os.Getenv("BITTREX_API_KEY")
 	secretKey := os.Getenv("BITTREX_SECRET_KEY")
 	httpClient := &http.Client{}
-	client := newBittrexClient(apiKey, secretKey, httpClient)
+	client := Bittrex.NewBittrexClient(apiKey, secretKey, httpClient)
 	api := NewBittrexAPI(client, uri)
 	//log.Println(api.getCurrency("BTC"))
 	//log.Println(api.getBalances())

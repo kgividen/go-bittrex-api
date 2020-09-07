@@ -1,4 +1,4 @@
-module github.com/kgividen/go-bittrex-api
+module https://github.com/kgividen/go-bittrex-api
 
 go 1.14
 

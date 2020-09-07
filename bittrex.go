@@ -1,8 +1,7 @@
-package main
+package bittrex
 
 import (
 	"encoding/json"
-	"log"
 
 	"github.com/shopspring/decimal"
 )
