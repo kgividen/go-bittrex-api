@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"log"
 
 	"github.com/shopspring/decimal"
 )
@@ -165,13 +166,13 @@ func (this *BittrexAPI) getOrders(openOrClosed string) ([]Order, error) {
 	return orders, nil
 }
 
-//OrderType:LIMIT, MARKET, CEILING_LIMIT, CEILING_MARKET
+//Required marketSymbol, direction, type, timeInForce
 func (this *BittrexAPI) createOrder(order Order) ([]Order, error) {
 	payload, err := json.Marshal(order)
-
 	if err != nil {
 		return nil, err
 	}
+
 	uri := this.uri + "/orders/"
 	body, err := this.client.Do("POST", uri, string(payload), true)
 	if err != nil {
@@ -220,42 +221,48 @@ type Market struct {
 }
 
 type MarketSummary struct {
-	Symbol        string          `json:"symbol"`
-	High          decimal.Decimal `json:"high,string"`
-	Low           decimal.Decimal `json:"low,string"`
-	Volume        decimal.Decimal `json:"volume,string"`
-	QuoteVolume   decimal.Decimal `json:"quoteVolume,string"`
-	PercentChange decimal.Decimal `json:"percentChange,string"`
-	UpdatedAt     string          `json:"updatedAt"`
+	Symbol        string `json:"symbol"`
+	High          *Dec   `json:"high,string"`
+	Low           *Dec   `json:"low,string"`
+	Volume        *Dec   `json:"volume,string"`
+	QuoteVolume   *Dec   `json:"quoteVolume,string"`
+	PercentChange *Dec   `json:"percentChange,string"`
+	UpdatedAt     string `json:"updatedAt"`
 }
 
 type MarketTicker struct {
-	Symbol        string          `json:"symbol"`
-	LastTradeRate decimal.Decimal `json:"lastTradeRate,string"`
-	BidRate       decimal.Decimal `json:"bidRate,string"`
-	AskRate       decimal.Decimal `json:"askRate,string"`
+	Symbol        string `json:"symbol"`
+	LastTradeRate *Dec   `json:"lastTradeRate,string"`
+	BidRate       *Dec   `json:"bidRate,string"`
+	AskRate       *Dec   `json:"askRate,string"`
 }
 
 type Order struct {
-	OrderID       string          `json:"id"`
-	MarketSymbol  string          `json:"marketSymbol"`
-	Direction     string          `json:"direction"`
-	OrderType     string          `json:"type"`
-	Quantity      decimal.Decimal `json:"quantity,string"`
-	Limit         decimal.Decimal `json:"limit,string"`
-	Ceiling       decimal.Decimal `json:"ceiling,string"`
-	TimeInForce   string          `json:"timeInForce"`
-	ClientOrderId string          `json:"clientOrderId"`
-	FillQuantity  decimal.Decimal `json:"fillQuantity,string"`
-	Commission    decimal.Decimal `json:"commission,string"`
-	Proceeds      decimal.Decimal `json:"proceeds,string"`
-	Status        string          `json:"status"`
-	CreatedAt     string          `json:"createdAt"`
-	UpdatedAt     string          `json:"updatedAt"`
-	ClosedAt      string          `json:"closedAt"`
-	UseAwards     bool            `json:"useAwards"`
-	OrderToCancel struct {
-		OrderType string `json:"type"`
-		ID        string `json:"id"`
-	} `json:"orderToCancel"`
+	OrderID       string       `json:"id,omitempty"`
+	MarketSymbol  string       `json:"marketSymbol"` //Required
+	Direction     string       `json:"direction"`    //Required - Buy, Sell
+	OrderType     string       `json:"type"`         //Required - LIMIT, MARKET, CEILING_LIMIT, CEILING_MARKET
+	Quantity      *Dec         `json:"quantity,string,omitempty"`
+	Limit         *Dec         `json:"limit,string,omitempty"`
+	Ceiling       *Dec         `json:"ceiling,string,omitempty"`
+	TimeInForce   string       `json:"timeInForce,omitempty"` //GOOD_TIL_CANCELLED, IMMEDIATE_OR_CANCEL, FILL_OR_KILL, POST_ONLY_GOOD_TIL_CANCELLED, BUY_NOW
+	ClientOrderId string       `json:"clientOrderId,omitempty"`
+	FillQuantity  *Dec         `json:"fillQuantity,string,omitempty"`
+	Commission    *Dec         `json:"commission,string,omitempty"`
+	Proceeds      *Dec         `json:"proceeds,string,omitempty"`
+	Status        string       `json:"status,omitempty"`
+	CreatedAt     string       `json:"createdAt,omitempty"`
+	UpdatedAt     string       `json:"updatedAt,omitempty"`
+	ClosedAt      string       `json:"closedAt,omitempty"`
+	UseAwards     bool         `json:"useAwards,omitempty"`
+	OrderToCancel *OrderCancel `json:"orderToCancel,omitempty"` //Required -  GOOD_TIL_CANCELLED, IMMEDIATE_OR_CANCEL, FILL_OR_KILL, POST_ONLY_GOOD_TIL_CANCELLED, BUY_NOW
+}
+
+type OrderCancel struct {
+	OrderType string `json:"type,omitempty"`
+	ID        string `json:"id,omitempty"`
+}
+
+type Dec struct {
+	decimal.Decimal
 }

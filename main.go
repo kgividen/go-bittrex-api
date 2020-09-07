@@ -4,6 +4,8 @@ import (
 	"log"
 	"net/http"
 	"os"
+
+	"github.com/shopspring/decimal"
 )
 
 func main() {
@@ -20,7 +22,22 @@ func main() {
 	//log.Printf("getMarketSummaries: %v", api.getMarketSummaries())
 	//log.Printf("getMarketTicker: %v", api.getMarketTicker("ETH-BTC"))
 	//log.Printf("getORders: %v,", api.getOrders("Open"))
-	orders, _ := api.getOrders("Closed")
-	log.Printf("getORders: %v", orders)
+	//orders, _ := api.getOrders("Closed")
+	//Required marketSymbol, direction, type, timeInForce
 
+	order := Order{
+		OrderID:      "",
+		MarketSymbol: "ETH-BTC",
+		Direction:    "BUY",
+		OrderType:    "LIMIT",
+		TimeInForce:  "GOOD_TIL_CANCELLED",
+		Quantity:     &Dec{decimal.NewFromFloat(1)},
+		Limit:        &Dec{decimal.NewFromFloat(1)},
+	}
+
+	response, err := api.createOrder(order)
+	if err != nil {
+		log.Println(err.Error())
+	}
+	log.Printf("response: %v", response)
 }
