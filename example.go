@@ -35,7 +35,7 @@ func example() {
 		Limit:        &Dec{decimal.NewFromFloat(1)},
 	}
 
-	response, err := api.createOrder(order)
+	response, err := api.CreateOrder(order)
 	if err != nil {
 		log.Println(err.Error())
 	}
