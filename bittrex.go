@@ -2,6 +2,7 @@ package bittrex
 
 import (
 	"encoding/json"
+	"errors"
 
 	"github.com/shopspring/decimal"
 )
@@ -180,7 +181,7 @@ func (this *BittrexAPI) CreateOrder(order Order) ([]Order, error) {
 
 	var orders []Order
 	if err := json.Unmarshal(body, &orders); err != nil {
-		return nil, err
+		return nil, errors.New(err.Error() + string(body))
 	}
 
 	return orders, nil
