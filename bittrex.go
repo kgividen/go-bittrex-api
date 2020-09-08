@@ -167,24 +167,24 @@ func (this *BittrexAPI) GetOrders(openOrClosed string) ([]Order, error) {
 }
 
 //Required marketSymbol, direction, type, timeInForce
-func (this *BittrexAPI) CreateOrder(order Order) ([]Order, error) {
+func (this *BittrexAPI) CreateOrder(order Order) (*Order, error) {
 	payload, err := json.Marshal(order)
 	if err != nil {
 		return nil, err
 	}
 
-	uri := this.uri + "/orders/"
+	uri := this.uri + "/orders"
 	body, err := this.client.Do("POST", uri, string(payload), true)
 	if err != nil {
 		return nil, err
 	}
 
-	var orders []Order
-	if err := json.Unmarshal(body, &orders); err != nil {
+	var returnOrder *Order
+	if err := json.Unmarshal(body, &returnOrder); err != nil {
 		return nil, errors.New(err.Error() + string(body))
 	}
 
-	return orders, nil
+	return returnOrder, nil
 }
 
 //////////////////////////////////////////

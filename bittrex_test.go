@@ -222,6 +222,35 @@ func (this *BittrexAPIFixture) TestGetOrders() {
 	this.So(result[0].Status, should.Equal, "CLOSED")
 }
 
+func (this *BittrexAPIFixture) TestCreateOrder() {
+	client := &fakeBittrexClient{}
+	bittrex := NewBittrexAPI(client, "")
+	order := Order{
+		OrderID:      "",
+		MarketSymbol: "ETH-BTC",
+		Direction:    "BUY",
+		OrderType:    "LIMIT",
+		TimeInForce:  "GOOD_TIL_CANCELLED",
+		Quantity:     &Dec{decimal.NewFromFloat(5)},
+		Limit:        &Dec{decimal.NewFromFloat(0.00039561)},
+	}
+	result, err := bittrex.CreateOrder(order)
+	this.So(err, should.BeNil)
+	this.So(result, should.Resemble, &Order{
+		OrderID:      "fab677a0-510e-456e-b450-8a75cea69f5d",
+		MarketSymbol: "ETH-BTC",
+		Direction:    "BUY",
+		OrderType:    "LIMIT",
+		Quantity:     &Dec{decimal.NewFromFloatWithExponent(5, 0)},
+		Limit:        &Dec{decimal.NewFromFloatWithExponent(0.00039561, -8)},
+		TimeInForce:  "GOOD_TIL_CANCELLED",
+		Status:       "OPEN",
+		CreatedAt:    "2020-09-08T05:08:40.84Z",
+		UpdatedAt:    "2020-09-08T05:08:40.84Z",
+		ClosedAt:     "",
+	})
+}
+
 ///////////////////////////////////////
 
 type fakeBittrexClient struct{}
@@ -269,6 +298,10 @@ func (this *fakeBittrexClient) Do(method, uri, payload string, authenticate bool
 
 	if uri == "/orders/closed" {
 		return []byte("[{\"id\": \"55eb2c82-4184-4a24-8b6e-ee154b2f7eaf\",\"marketSymbol\": \"XRP-BTC\",\"direction\": \"BUY\",\"type\": \"LIMIT\",\"quantity\": \"77.53046131\",\"limit\": \"0.00003528\",\"timeInForce\": \"GOOD_TIL_CANCELLED\",\"fillQuantity\": \"77.53046131\",\"commission\": \"0.00000682\",\"proceeds\": \"0.00272829\",\"status\": \"CLOSED\",\"createdAt\": \"2017-10-20T18:27:20.747Z\",\"updatedAt\": \"2017-10-20T18:27:20.763Z\",\"closedAt\": \"2017-10-20T18:27:20.763Z\"}]"), nil
+	}
+
+	if uri == "/orders" {
+		return []byte("{\"id\": \"fab677a0-510e-456e-b450-8a75cea69f5d\",\"marketSymbol\": \"ETH-BTC\",\"direction\": \"BUY\",\"type\": \"LIMIT\",\"quantity\": \"5\",\"limit\": \"0.00039561\",\"timeInForce\": \"GOOD_TIL_CANCELLED\",\"status\": \"OPEN\",\"createdAt\": \"2020-09-08T05:08:40.84Z\",\"updatedAt\": \"2020-09-08T05:08:40.84Z\"}"), nil
 	}
 
 	return nil, errors.New("test resource not found")
