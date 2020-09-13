@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"os"
 
+	crypto "github.com/kgividen/crypto_contracts"
 	"github.com/shopspring/decimal"
 )
 
@@ -12,8 +13,7 @@ func example() {
 	uri := "https://api.bittrex.com/v3"
 	apiKey := os.Getenv("BITTREX_API_KEY")
 	secretKey := os.Getenv("BITTREX_SECRET_KEY")
-	httpClient := &http.Client{}
-	client := NewBittrexClient(apiKey, secretKey, httpClient)
+	client := NewBittrexClient(apiKey, secretKey, http.Client{})
 	api := NewBittrexAPI(client, uri)
 	//log.Println(api.getCurrency("BTC"))
 	//log.Println(api.getBalances())
@@ -25,14 +25,14 @@ func example() {
 	//orders, _ := api.getOrders("Closed")
 	//Required marketSymbol, direction, type, timeInForce
 
-	order := Order{
+	order := crypto.Order{
 		OrderID:      "",
 		MarketSymbol: "ETH-BTC",
 		Direction:    "BUY",
 		OrderType:    "LIMIT",
 		TimeInForce:  "GOOD_TIL_CANCELLED",
-		Quantity:     &Dec{decimal.NewFromFloat(1)},
-		Limit:        &Dec{decimal.NewFromFloat(1)},
+		Quantity:     &crypto.Dec{Decimal: decimal.NewFromFloat(1)},
+		Limit:        &crypto.Dec{Decimal: decimal.NewFromFloat(1)},
 	}
 
 	response, err := api.CreateOrder(order)

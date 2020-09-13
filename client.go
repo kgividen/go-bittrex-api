@@ -13,13 +13,13 @@ import (
 )
 
 type bittrexClient struct {
-	apiKey    string
-	secretKey string
-	client    Http
+	apiKey     string
+	secretKey  string
+	httpClient http.Client
 }
 
-func NewBittrexClient(apiKey string, secretKey string, client Http) *bittrexClient {
-	return &bittrexClient{apiKey: apiKey, secretKey: secretKey, client: client}
+func NewBittrexClient(apiKey string, secretKey string, client http.Client) *bittrexClient {
+	return &bittrexClient{apiKey: apiKey, secretKey: secretKey, httpClient: client}
 }
 
 func (this *bittrexClient) Do(method string, uri string, payload string, authenticate bool) ([]byte, error) {
@@ -29,12 +29,12 @@ func (this *bittrexClient) Do(method string, uri string, payload string, authent
 		return nil, err
 	}
 	if authenticate {
-		if this.authenticate(request, payload, uri, method) != nil {
+		if this.Authenticate(request, payload, uri, method) != nil {
 			return nil, err
 		}
 	}
 
-	resp, err := this.client.Do(request)
+	resp, err := this.httpClient.Do(request)
 	if err != nil {
 		return nil, err
 	}
@@ -49,7 +49,7 @@ func (this *bittrexClient) Do(method string, uri string, payload string, authent
 	return body, err
 }
 
-func (this *bittrexClient) authenticate(request *http.Request, payload string, uri string, method string) error {
+func (this *bittrexClient) Authenticate(request *http.Request, payload string, uri string, method string) error {
 	if len(this.apiKey) == 0 || len(this.secretKey) == 0 {
 		err := errors.New("you need to set API Key and API Secret to call this method")
 		return err

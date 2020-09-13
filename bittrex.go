@@ -4,41 +4,41 @@ import (
 	"encoding/json"
 	"errors"
 
-	"github.com/shopspring/decimal"
+	crypto "github.com/kgividen/crypto_contracts"
 )
 
 type BittrexAPI struct {
 	uri    string
-	client Client
+	client crypto.Client
 }
 
-func NewBittrexAPI(client Client, uri string) *BittrexAPI {
+func NewBittrexAPI(client crypto.Client, uri string) *BittrexAPI {
 	return &BittrexAPI{client: client, uri: uri}
 }
 
-func (this *BittrexAPI) GetMarket(symbol string) (Market, error) {
+func (this *BittrexAPI) GetMarket(symbol string) (*crypto.Market, error) {
 	uri := this.uri + "/markets/" + symbol
 	body, err := this.client.Do("GET", uri, "", false)
 	if err != nil {
-		return Market{}, err
+		return nil, err
 	}
 
-	market := Market{}
+	market := crypto.Market{}
 	if err := json.Unmarshal(body, &market); err != nil {
-		return Market{}, err
+		return nil, err
 	}
 
-	return market, nil
+	return &market, nil
 }
 
-func (this *BittrexAPI) GetMarkets() ([]Market, error) {
+func (this *BittrexAPI) GetMarkets() ([]*crypto.Market, error) {
 	uri := this.uri + "/markets"
 	body, err := this.client.Do("GET", uri, "", false)
 	if err != nil {
 		return nil, err
 	}
 
-	var markets []Market
+	var markets []*crypto.Market
 	if err := json.Unmarshal(body, &markets); err != nil {
 		return nil, err
 	}
@@ -46,29 +46,29 @@ func (this *BittrexAPI) GetMarkets() ([]Market, error) {
 	return markets, nil
 }
 
-func (this *BittrexAPI) GetMarketSummary(symbol string) (MarketSummary, error) {
+func (this *BittrexAPI) GetMarketSummary(symbol string) (*crypto.MarketSummary, error) {
 	uri := this.uri + "/markets/" + symbol + "/summary"
 	body, err := this.client.Do("GET", uri, "", false)
 	if err != nil {
-		return MarketSummary{}, err
+		return nil, err
 	}
 
-	marketSummary := MarketSummary{}
+	marketSummary := crypto.MarketSummary{}
 	if err := json.Unmarshal(body, &marketSummary); err != nil {
-		return MarketSummary{}, err
+		return nil, err
 	}
 
-	return marketSummary, nil
+	return &marketSummary, nil
 }
 
-func (this *BittrexAPI) GetMarketSummaries() ([]MarketSummary, error) {
+func (this *BittrexAPI) GetMarketSummaries() ([]*crypto.MarketSummary, error) {
 	uri := this.uri + "/markets/summaries"
 	body, err := this.client.Do("GET", uri, "", false)
 	if err != nil {
 		return nil, err
 	}
 
-	var marketSummaries []MarketSummary
+	var marketSummaries []*crypto.MarketSummary
 	if err := json.Unmarshal(body, &marketSummaries); err != nil {
 		return nil, err
 	}
@@ -76,29 +76,29 @@ func (this *BittrexAPI) GetMarketSummaries() ([]MarketSummary, error) {
 	return marketSummaries, nil
 }
 
-func (this *BittrexAPI) GetMarketTicker(symbol string) (MarketTicker, error) {
+func (this *BittrexAPI) GetMarketTicker(symbol string) (*crypto.MarketTicker, error) {
 	uri := this.uri + "/markets/" + symbol + "/ticker"
 	body, err := this.client.Do("GET", uri, "", false)
 	if err != nil {
-		return MarketTicker{}, err
+		return nil, err
 	}
 
-	marketTicker := MarketTicker{}
+	marketTicker := crypto.MarketTicker{}
 	if err := json.Unmarshal(body, &marketTicker); err != nil {
-		return MarketTicker{}, err
+		return nil, err
 	}
 
-	return marketTicker, nil
+	return &marketTicker, nil
 }
 
-func (this *BittrexAPI) GetMarketTickers() ([]MarketTicker, error) {
+func (this *BittrexAPI) GetMarketTickers() ([]*crypto.MarketTicker, error) {
 	uri := this.uri + "/markets/tickers"
 	body, err := this.client.Do("GET", uri, "", false)
 	if err != nil {
 		return nil, err
 	}
 
-	var marketTickers []MarketTicker
+	var marketTickers []*crypto.MarketTicker
 	if err := json.Unmarshal(body, &marketTickers); err != nil {
 		return nil, err
 	}
@@ -106,29 +106,29 @@ func (this *BittrexAPI) GetMarketTickers() ([]MarketTicker, error) {
 	return marketTickers, nil
 }
 
-func (this *BittrexAPI) GetCurrency(symbol string) (Currency, error) {
+func (this *BittrexAPI) GetCurrency(symbol string) (*crypto.Currency, error) {
 	uri := this.uri + "/currencies/" + symbol
 	body, err := this.client.Do("GET", uri, "", false)
 	if err != nil {
-		return Currency{}, err
+		return nil, err
 	}
 
-	currency := Currency{}
+	currency := crypto.Currency{}
 	if err := json.Unmarshal(body, &currency); err != nil {
-		return Currency{}, err
+		return nil, err
 	}
 
-	return currency, nil
+	return &currency, nil
 }
 
-func (this *BittrexAPI) GetBalances() ([]Balance, error) {
+func (this *BittrexAPI) GetBalances() ([]*crypto.Balance, error) {
 	uri := this.uri + "/balances"
 	body, err := this.client.Do("GET", uri, "", true)
 	if err != nil {
 		return nil, err
 	}
 
-	var balances []Balance
+	var balances []*crypto.Balance
 	if err := json.Unmarshal(body, &balances); err != nil {
 		return nil, err
 	}
@@ -136,29 +136,29 @@ func (this *BittrexAPI) GetBalances() ([]Balance, error) {
 	return balances, nil
 }
 
-func (this *BittrexAPI) GetOrder(orderID string) (Order, error) {
+func (this *BittrexAPI) GetOrder(orderID string) (*crypto.Order, error) {
 	uri := this.uri + "/orders/" + orderID
 	body, err := this.client.Do("GET", uri, "", false)
 	if err != nil {
-		return Order{}, err
+		return nil, err
 	}
 
-	order := Order{}
+	order := crypto.Order{}
 	if err := json.Unmarshal(body, &order); err != nil {
-		return Order{}, err
+		return nil, err
 	}
 
-	return order, nil
+	return &order, nil
 }
 
-func (this *BittrexAPI) GetOrders(openOrClosed string) ([]Order, error) {
+func (this *BittrexAPI) GetOrders(openOrClosed string) ([]*crypto.Order, error) {
 	uri := this.uri + "/orders/" + openOrClosed
 	body, err := this.client.Do("GET", uri, "", true)
 	if err != nil {
 		return nil, err
 	}
 
-	var orders []Order
+	var orders []*crypto.Order
 	if err := json.Unmarshal(body, &orders); err != nil {
 		return nil, err
 	}
@@ -167,7 +167,7 @@ func (this *BittrexAPI) GetOrders(openOrClosed string) ([]Order, error) {
 }
 
 //Required marketSymbol, direction, type, timeInForce
-func (this *BittrexAPI) CreateOrder(order Order) (*Order, error) {
+func (this *BittrexAPI) CreateOrder(order crypto.Order) (*crypto.Order, error) {
 	payload, err := json.Marshal(order)
 	if err != nil {
 		return nil, err
@@ -179,90 +179,10 @@ func (this *BittrexAPI) CreateOrder(order Order) (*Order, error) {
 		return nil, err
 	}
 
-	var returnOrder *Order
+	var returnOrder *crypto.Order
 	if err := json.Unmarshal(body, &returnOrder); err != nil {
 		return nil, errors.New(err.Error() + string(body))
 	}
 
 	return returnOrder, nil
-}
-
-//////////////////////////////////////////
-type Currency struct {
-	Symbol           string `json:"symbol"`
-	Name             string `json:"name"`
-	CoinType         string `json:"coinType"`
-	Status           string `json:"status"`
-	MinConfirmations string `json:"minConfirmations"`
-	Notice           string `json:"notice"`
-	TxFee            string `json:"txFee"`
-	LogoUrl          string `json:"logoUrl"`
-	ProhibitedIn     string `json:"prohibitedIn"`
-	BaseAddress      string `json:"baseAddress"`
-}
-
-type Balance struct {
-	CurrencySymbol string `json:"currencySymbol"`
-	Total          string `json:"total"`
-	Available      string `json:"available"`
-	UpdatedAt      string `json:"updatedAt"`
-}
-
-type Market struct {
-	Symbol              string   `json:"symbol"`
-	BaseCurrencySymbol  string   `json:"baseCurrencySymbol"`
-	QuoteCurrencySymbol string   `json:"quoteCurrencySymbol"`
-	MinTradeSize        string   `json:"minTradeSize"`
-	Precision           int32    `json:"precision"`
-	Status              string   `json:"status"`
-	CreatedAt           string   `json:"createdAt"`
-	Notice              string   `json:"notice"`
-	ProhibitedIn        []string `json:"prohibitedIn"`
-}
-
-type MarketSummary struct {
-	Symbol        string `json:"symbol"`
-	High          *Dec   `json:"high,string"`
-	Low           *Dec   `json:"low,string"`
-	Volume        *Dec   `json:"volume,string"`
-	QuoteVolume   *Dec   `json:"quoteVolume,string"`
-	PercentChange *Dec   `json:"percentChange,string"`
-	UpdatedAt     string `json:"updatedAt"`
-}
-
-type MarketTicker struct {
-	Symbol        string `json:"symbol"`
-	LastTradeRate *Dec   `json:"lastTradeRate,string"`
-	BidRate       *Dec   `json:"bidRate,string"`
-	AskRate       *Dec   `json:"askRate,string"`
-}
-
-type Order struct {
-	OrderID       string       `json:"id,omitempty"`
-	MarketSymbol  string       `json:"marketSymbol"` //Required
-	Direction     string       `json:"direction"`    //Required - Buy, Sell
-	OrderType     string       `json:"type"`         //Required - LIMIT, MARKET, CEILING_LIMIT, CEILING_MARKET
-	Quantity      *Dec         `json:"quantity,string,omitempty"`
-	Limit         *Dec         `json:"limit,string,omitempty"`
-	Ceiling       *Dec         `json:"ceiling,string,omitempty"`
-	TimeInForce   string       `json:"timeInForce,omitempty"` //GOOD_TIL_CANCELLED, IMMEDIATE_OR_CANCEL, FILL_OR_KILL, POST_ONLY_GOOD_TIL_CANCELLED, BUY_NOW
-	ClientOrderId string       `json:"clientOrderId,omitempty"`
-	FillQuantity  *Dec         `json:"fillQuantity,string,omitempty"`
-	Commission    *Dec         `json:"commission,string,omitempty"`
-	Proceeds      *Dec         `json:"proceeds,string,omitempty"`
-	Status        string       `json:"status,omitempty"`
-	CreatedAt     string       `json:"createdAt,omitempty"`
-	UpdatedAt     string       `json:"updatedAt,omitempty"`
-	ClosedAt      string       `json:"closedAt,omitempty"`
-	UseAwards     bool         `json:"useAwards,omitempty"`
-	OrderToCancel *OrderCancel `json:"orderToCancel,omitempty"` //Required -  GOOD_TIL_CANCELLED, IMMEDIATE_OR_CANCEL, FILL_OR_KILL, POST_ONLY_GOOD_TIL_CANCELLED, BUY_NOW
-}
-
-type OrderCancel struct {
-	OrderType string `json:"type,omitempty"`
-	ID        string `json:"id,omitempty"`
-}
-
-type Dec struct {
-	decimal.Decimal
 }
