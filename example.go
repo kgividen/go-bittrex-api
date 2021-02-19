@@ -5,7 +5,6 @@ import (
 	"net/http"
 	"os"
 
-	crypto "github.com/kgividen/crypto_contracts"
 	"github.com/shopspring/decimal"
 )
 
@@ -25,14 +24,14 @@ func example() {
 	//orders, _ := api.getOrders("Closed")
 	//Required marketSymbol, direction, type, timeInForce
 
-	order := crypto.Order{
+	order := Order{
 		OrderID:      "",
 		MarketSymbol: "ETH-BTC",
 		Direction:    "BUY",
 		OrderType:    "LIMIT",
 		TimeInForce:  "GOOD_TIL_CANCELLED",
-		Quantity:     &crypto.Dec{Decimal: decimal.NewFromFloat(1)},
-		Limit:        &crypto.Dec{Decimal: decimal.NewFromFloat(1)},
+		Quantity:     &Dec{Decimal: decimal.NewFromFloat(1)},
+		Limit:        &Dec{Decimal: decimal.NewFromFloat(1)},
 	}
 
 	response, err := api.CreateOrder(order)
